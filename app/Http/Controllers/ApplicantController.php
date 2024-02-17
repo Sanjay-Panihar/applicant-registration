@@ -16,7 +16,8 @@ class ApplicantController extends Controller
             return DataTables::of($applicants)
                 ->addColumn('action', function ($applicants) {
                     return '<button class="btn btn-primary btn-sm" onclick="editApplicant(' . $applicants->id . ')"><i class="fas fa-edit" title="Edit"></i></button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteApplicant(' . $applicants->id . ')"><i class="fas fa-trash-alt" title="Delete"></i></button>';
+                    <button class="btn btn-danger btn-sm" onclick="deleteApplicant(' . $applicants->id . ')"><i class="fas fa-trash-alt" title="Delete"></i></button>
+                    <button class="btn btn-info btn-sm" onclick="viewApplicant(' . $applicants->id . ')"><i class="fas fa-eye" title="Delete"></i></button>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);

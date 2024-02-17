@@ -11,7 +11,7 @@
     </x-slot>
 
     <div class="container mt-5">
-        <a href="{{ url('/dashboard') }}" class="btn btn-secondary">Back</a>
+        <a href="{{ url('/dashboard') }}" class="btn btn-secondary rounded-pill mb-2">Back</a>
 
         <h1 class="my-4 text-center">Applicant Registration</h1>
 
@@ -71,7 +71,7 @@
                 <div class="text-danger error-message" id="photo-error"></div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-primary rounded-pill mb-2">Register</button>
         </form>
     </div>
 </x-app-layout>
