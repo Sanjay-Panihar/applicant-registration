@@ -96,7 +96,7 @@
 
 @endsection
 
-@section('scripts')
+@section('script')
 
 <script>
     $(document).ready(function() {
@@ -144,7 +144,6 @@
                         name: 'cropped_image',
                         value: base64
                     }));
-console.log('here');
 
                     // Submit the form via AJAX
                     $.ajax({
