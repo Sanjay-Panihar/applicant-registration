@@ -96,16 +96,168 @@
                         <div id="uploaded-photo" style="margin-top: 10px;">
                             <!-- Display the last uploaded photo -->
                             @if($applicant->photo)
-                                <img src="{{ asset($applicant->photo) }}" style="max-width: 100px; max-height: 100px;">
+                            <img src="{{ asset($applicant->photo) }}" style="max-width: 100px; max-height: 100px;">
                             @endif
                         </div>
                     </div>
 
                     <!-- Update Button -->
-                    <button type="submit" class="btn btn-primary rounded-pill mb-2">Update</button>
+                    <button type="submit" class="btn btn-primary rounded-pill mb-2" id="update-btn">Update</button>
                 </div>
             </div>
         </form>
     </div>
 </x-app-layout>
+
+<script>
+    $(document).ready(function() {
+        let croppie;
+        let errors = @json($errors->getMessages(), JSON_PRETTY_PRINT);
+
+        // Custom validation method for minimum age
+        $.validator.addMethod('minAge', function(value, element) {
+            // Parse the entered date of birth
+            var dob = new Date(value);
+            // Calculate today's date
+            var today = new Date();
+            // Calculate the age difference in milliseconds
+            var ageDiff = today - dob;
+            // Convert milliseconds to years
+            var years = ageDiff / (1000 * 60 * 60 * 24 * 365);
+            // Return true if age is 18 or older, false otherwise
+            return years >= 18;
+        }, 'You must be at least 18 years old');
+
+
+        // Initialize jQuery Validation for the registration form
+        $('#registration-form').validate({
+            // Specify validation rules
+            rules: {
+                first_name: 'required',
+                last_name: 'required',
+                phone: 'required',
+                email: {
+                    required: true,
+                    email: true
+                },
+                address: 'required',
+                dob: {
+                    required: true,
+                    date: true,
+                    minAge: 18 // Minimum age is 18
+                },
+                gender: 'required',
+                resume: {
+                    extension: 'pdf|docx' // Validate file extension
+                },
+                photo: {
+                    extension: 'jpg|png|jpeg' // Validate file extension
+                }
+            },
+            // Specify validation error messages
+            messages: errors,
+            // Specify the class to be added to the error message elements
+            errorClass: 'invalid',
+            // Specify where to place the error messages
+            errorPlacement: function(error, element) {
+                // Append error message after the parent div of the input element
+                error.appendTo(element.closest('div'));
+            },
+            // Handle form submission
+            submitHandler: function(form) {
+                // Submit the form via AJAX
+                $.ajax({
+                    url: $(form).attr('action'), // Get the form action URL
+                    type: $(form).attr('method'), // Get the form method (POST)
+                    data: new FormData(form),
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        // Handle successful form submission
+                        if (response.status) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                            });
+                            // Optionally, redirect or perform any other action
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle form submission error
+                        if (xhr.responseText) {
+                            var errors = JSON.parse(xhr.responseText);
+                            if (errors.errors) {
+                                // Iterate over the errors object and handle each field error
+                                $.each(errors.errors, function(field, messages) {
+                                    // Construct the error message from the array of messages
+                                    var errorMessage = messages.join('<br>');
+                                    // Update the HTML content of the corresponding error element
+                                    $('#' + field + '-error').html(errorMessage);
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        // Create Croppie instance
+        croppie = new Croppie(document.getElementById('cropper-container'), {
+            viewport: { width: 200, height: 200 },
+            boundary: { width: 300, height: 300 },
+            showZoomer: true,
+            enableOrientation: true
+        });
+
+        // Handle photo upload
+        $('#photo').on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    croppie.bind({
+                        url: reader.result
+                    });
+                    // Show the cropper container
+                    $('#cropper-container').show();
+                }
+                reader.readAsDataURL(file);
+            } else {
+                // Hide the cropper container if no file is selected
+                $('#cropper-container').hide();
+            }
+        });
+    });
+</script>
+@endsection
+
+@section('css')
+    <style>
+        /* Custom styles for the form */
+        #registration-form {
+            max-width: 80%;
+            margin: 0 auto;
+        }
+
+        #registration-form div {
+            margin-bottom: 20px;
+        }
+
+        /* Hide the cropped image by default */
+        #cropped-image {
+            display: none;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Style for error messages */
+        .invalid {
+            color: red;
+        }
+
+        #cropper-container {
+            display: none;
+        }
+    </style>
 @endsection

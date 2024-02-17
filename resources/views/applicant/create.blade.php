@@ -11,11 +11,11 @@
     </x-slot>
 
     <div class="container mt-5">
-        <a href="{{ url('/dashboard') }}" class="btn btn-secondary rounded-pill mb-2">Back</a> <!-- Back button positioned above the form -->
+        <a href="{{ url('/dashboard') }}" class="btn btn-secondary rounded-pill mb-2">Back</a>
 
         <h1 class="my-4 text-center">Applicant Registration</h1>
 
-        <form id="registration-form" class="bg-light p-4 rounded" method="POST" action="{{ route('applicants.store')}} ">
+        <form id="registration-form" class="bg-light p-4 rounded" method="POST" action=" {{ route('applicants.store')}} ">
             @csrf
             <div class="mb-3">
                 <label for="first_name" class="form-label">First Name</label>
@@ -76,7 +76,6 @@
     </div>
 </x-app-layout>
 @endsection
-
 
 @section('script')
 

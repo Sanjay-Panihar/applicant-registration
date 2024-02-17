@@ -68,7 +68,7 @@ class ApplicantController extends Controller
         $applicant = Applicant::create($validatedData);
 
         // Optionally, you can return a response or redirect the user
-        return response()->json(['status' => true, 'message' => 'Applicant created successfully', 'applicant' => $applicant], 201);
+        return response()->json(['status' => true, 'message' => 'Applicant created successfully'], 201);
     }
 
 
