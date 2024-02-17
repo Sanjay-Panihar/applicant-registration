@@ -24,34 +24,42 @@ class ApplicantController extends Controller
 
         return view('applicants.index');
 
-}
-public function create()
-{
-    return view('applicant.create');
-}
-public function store(Request $request)
-    { echo '<pre>'; print_r($request->all()); die;
-        $validator = Validator::make($request->all(), Applicant::$rules);
+    }
+    public function create()
+    {
+        return view('applicant.create');
+    }
+    public function store(Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone' => 'required',
+            'email' => 'required|email|unique:applicants,email', // Unique validation rule added
+            'address' => 'required',
+            'dob' => 'required|date',
+            'gender' => 'required|in:male,female',
+            'resume' => 'required|file|mimes:pdf,doc,docx|max:2048', // Example validation for resume file
+            'photo' => 'required|image|mimes:jpg,png|max:2048', // Example validation for photo file
+        ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $applicant = Applicant::create($request->all());
-
+        // Handle file uploads
         if ($request->hasFile('resume')) {
             $resumePath = $request->file('resume')->store('resumes');
-            $applicant->resume = $resumePath;
-            $applicant->save();
+            $validatedData['resume_path'] = $resumePath;
         }
 
         if ($request->hasFile('photo')) {
             $photoPath = $request->file('photo')->store('photos');
-            $applicant->photo = $photoPath;
-            $applicant->save();
+            $validatedData['photo_path'] = $photoPath;
         }
 
-        return redirect()->route('applicants.index')->with('success', 'Applicant registered successfully.');
+        // Create a new Applicant instance with the validated data
+        $applicant = Applicant::create($validatedData);
+
+        // Optionally, you can return a response or redirect the user
+        return response()->json(['status' => true, 'message' => 'Applicant created successfully', 'applicant' => $applicant], 201);
     }
 
     public function show(Applicant $applicant)

@@ -81,15 +81,16 @@
         </div>
         <div class="mb-3">
             <label for="resume" class="form-label">Resume</label>
-            <input type="file" class="form-control" id="resume" name="resume" accept=".pdf,.docx">
+            <input type="file" class="form-control" id="resume" name="resume">
             <div class="text-danger error-message" id="resume-error"></div>
         </div>
         <div class="mb-3">
             <label for="photo" class="form-label">Photo</label>
-            <input type="file" class="form-control" id="photo" name="photo" accept=".jpg,.png">
+            <input type="file" class="form-control" id="photo" name="photo">
             <div id="cropper-container"></div>
             <div class="text-danger error-message" id="photo-error"></div>
         </div>
+
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 </div>
@@ -147,34 +148,43 @@
 
                     // Submit the form via AJAX
                     $.ajax({
-                        url: $(form).attr('action'), // Get the form action URL
-                        type: $(form).attr('method'), // Get the form method (POST)
-                        data: new FormData(form),
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            // Handle successful form submission
-                            console.log(response);
-                            if (response.status) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success!',
-                                    text: response.message,
-                                });
-                                // Reset the form and clear error messages
-                                $(form)[0].reset();
-                                $('.text-danger').html('');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle form submission error
-                            console.error(xhr);
-                            if (xhr.responseText) {
-                                var errors = xhr.responseJSON.message;
-                                $('#general-error').html(errors);
-                            }
-                        }
-                    });
+    url: $(form).attr('action'), // Get the form action URL
+    type: $(form).attr('method'), // Get the form method (POST)
+    data: new FormData(form),
+    processData: false,
+    contentType: false,
+    success: function(response) {
+        // Handle successful form submission
+        console.log(response);
+        if (response.status) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: response.message,
+            });
+            // Reset the form and clear error messages
+            $(form)[0].reset();
+            $('.text-danger').html('');
+        }
+    },
+    error: function(xhr, status, error) {
+        // Handle form submission error
+        console.error(xhr);
+        if (xhr.responseText) {
+            var errors = JSON.parse(xhr.responseText);
+            if (errors.errors) {
+                // Iterate over the errors object and handle each field error
+                $.each(errors.errors, function(field, messages) {
+                    // Construct the error message from the array of messages
+                    var errorMessage = messages.join('<br>');
+                    // Update the HTML content of the corresponding error element
+                    $('#' + field + '-error').html(errorMessage);
+                });
+            }
+        }
+    }
+});
+
                 });
             }
         });
