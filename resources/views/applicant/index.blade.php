@@ -59,5 +59,55 @@
     $('#addApplicant').on('click', function() {
         window.location.href = "{{ route('applicants.create')}}";
     });
+
+    function confirmDelete(applicantId) {
+    Swal.fire({
+        title: 'Confirm Deletion',
+        text: 'Are you sure you want to delete this applicant?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            deleteApplicant(applicantId);
+        }
+    });
+}
+
+function deleteApplicant(applicantId) {
+    $.ajax({
+        url: '/delete/' + applicantId,
+        type: 'DELETE',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            if (response.status) {
+                $('#applicant_' + applicantId).remove(); // Remove the deleted row from the table
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Applicant deleted successfully!'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.message
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to delete applicant'
+            });
+        }
+    });
+}
+
 </script>
 @endsection

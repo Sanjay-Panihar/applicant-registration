@@ -16,7 +16,7 @@ class ApplicantController extends Controller
             return DataTables::of($applicants)
                 ->addColumn('action', function ($applicants) {
                     return '<button class="btn btn-primary btn-sm" onclick="editApplicant(' . $applicants->id . ')"><i class="fas fa-edit" title="Edit"></i></button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteApplicant(' . $applicants->id . ')"><i class="fas fa-trash-alt" title="Delete"></i></button>
+                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(' . $applicants->id . ')"><i class="fas fa-trash-alt" title="Delete"></i></button>
                     <button class="btn btn-info btn-sm" onclick="viewApplicant(' . $applicants->id . ')"><i class="fas fa-eye" title="Delete"></i></button>';
                 })
                 ->rawColumns(['action'])
@@ -71,6 +71,21 @@ class ApplicantController extends Controller
     public function edit(Applicant $applicant)
     {
         return view('applicants.edit', compact('applicant'));
+    }
+
+    public function destroy(Applicant $applicant)
+    {
+        try {
+            // Delete the applicant
+            $applicant->delete();
+
+            // Return success response
+            return response()->json(['status' => true, 'message' => 'Applicant deleted successfully']);
+
+        } catch (\Exception $e) {
+            // Return error response if deletion fails
+            return response()->json(['status' => false, 'message' => 'Failed to delete applicant'], 500);
+        }
     }
 
 }
