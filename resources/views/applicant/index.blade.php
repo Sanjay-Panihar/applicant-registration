@@ -4,10 +4,10 @@
 
 @section('content')
 <div class="row g-4">
-    <div class="col-12">
+    <div class="col-md-10 offset-md-1">
         <div class="bg-light rounded h-100 p-4">
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-primary rounded-pill mb-2" id="addApplicant" data-toggle="modal"
+            <div class="d-flex justify-content-end mb-3">
+                <button type="button" class="btn btn-primary rounded-pill" id="addApplicant" data-toggle="modal"
                     data-target="#addCardModel">Add Applicant</button>
             </div>
 
@@ -29,6 +29,7 @@
         </div>
     </div>
 </div>
+@include('modal.view_modal')
 @endsection
 
 @section('script')
@@ -55,6 +56,30 @@
     function editApplicant(applicant_id) {
         window.location.href = "/applicants/" + applicant_id + "/edit";
     }
+    function viewApplicant(applicant_id) {
+    // Send AJAX request to retrieve applicant data
+    $.ajax({
+        url: '/show/' + applicant_id,
+        type: 'GET',
+        success: function(response) {
+            // Populate modal with applicant data
+            $('#first_name').val(response.applicant.first_name);
+            $('#last_name').val(response.applicant.last_name);
+            $('#phone').val(response.applicant.phone);
+            $('#email').val(response.applicant.email);
+            $('#address').val(response.applicant.address);
+            $('#dob').val(response.applicant.dob);
+            $('#gender').val(response.applicant.gender);
+            // Display modal
+            $('#applicantDetails').modal('show');
+        },
+        error: function(xhr, status, error) {
+            // Handle error
+            console.error(xhr.responseText);
+        }
+    });
+}
+
 
     $('#addApplicant').on('click', function() {
         window.location.href = "{{ route('applicants.create')}}";
@@ -85,12 +110,14 @@ function deleteApplicant(applicantId) {
         },
         success: function(response) {
             if (response.status) {
-                $('#applicant_' + applicantId).remove(); // Remove the deleted row from the table
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
-                    text: 'Applicant deleted successfully!'
+                    text: response.message
                 });
+                $('#applicant-table').DataTable().row('#applicant_' + applicantId).remove().draw();
+
+
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -111,3 +138,19 @@ function deleteApplicant(applicantId) {
 
 </script>
 @endsection
+
+@section('css')
+    <style>
+        .table {
+    width: 100%;
+}
+
+.table th,
+.table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+    </style>
+@endsection
+

@@ -34,8 +34,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/create', [ApplicantController::class, 'create'])->name('applicants.create');
 Route::post('/store', [ApplicantController::class, 'store'])->name('applicants.store');
 Route::get('/show/{applicant}', [ApplicantController::class, 'show'])->name('applicants.show');
-Route::get('/edit/{applicant}', [ApplicantController::class, 'edit'])->name('applicants.edit');
-Route::put('/update/{applicant}', [ApplicantController::class, 'update'])->name('applicants.update');
+Route::get('applicants/{id}/edit', [ApplicantController::class, 'edit'])->name('applicants.edit');
+Route::put('applicants/update/{applicant}', [ApplicantController::class, 'update'])->name('applicants.update');
 Route::delete('/delete/{applicant}', [ApplicantController::class, 'destroy'])->name('applicants.destroy');
 });
 

@@ -36,24 +36,32 @@ class ApplicantController extends Controller
         $validatedData = $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
-            'phone' => 'required',
-            'email' => 'required|email|unique:applicants,email', // Unique validation rule added
+            'phone' => 'required|numeric|digits:10',
+            'email' => 'required|email|unique:applicants,email',
             'address' => 'required',
             'dob' => 'required|date',
             'gender' => 'required|in:male,female',
-            'resume' => 'required|file|mimes:pdf,doc,docx|max:2048', // Example validation for resume file
-            'photo' => 'required|image|mimes:jpg,png|max:2048', // Example validation for photo file
+            'resume' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'photo' => 'required|image|mimes:jpg,png,jpeg|max:2048',
         ]);
 
-        // Handle file uploads
+        // Handle file uploads for resume
         if ($request->hasFile('resume')) {
-            $resumePath = $request->file('resume')->store('resumes');
-            $validatedData['resume_path'] = $resumePath;
+            $file = $request->file('resume');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time().'.'.$extension; // Use a unique filename to prevent overwriting
+            $path = $file->storeAs('resumes', $filename); // Save the image to the 'photos' directory with the custom filename
+            $validatedData['resume'] = $path;
         }
 
+        // Handle file uploads for photo
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('photos');
-            $validatedData['photo_path'] = $photoPath;
+            $file = $request->file('photo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time().'.'.$extension; // Use a unique filename to prevent overwriting
+            $path = $file->storeAs('photos', $filename); // Save the image to the 'photos' directory with the custom filename
+            $validatedData['photo'] = $path;
+            
         }
 
         // Create a new Applicant instance with the validated data
@@ -63,14 +71,67 @@ class ApplicantController extends Controller
         return response()->json(['status' => true, 'message' => 'Applicant created successfully', 'applicant' => $applicant], 201);
     }
 
+
     public function show(Applicant $applicant)
     {
-        return view('applicants.show', compact('applicant'));
+        if ($applicant) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Applicant found',
+                'applicant' => $applicant
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Applicant not found'
+            ], 404); // Assuming 404 status code for "not found" response
     }
+}
 
-    public function edit(Applicant $applicant)
+    public function edit($id)
     {
-        return view('applicants.edit', compact('applicant'));
+        $applicant = Applicant::find($id);
+
+        return view('applicant.edit', compact('applicant'));
+    }
+    public function update(Request $request, $id)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone' => 'required|numeric|digits:10',
+            'email' => 'required|email|unique:applicants,email,'.$id,
+            'address' => 'required',
+            'dob' => 'required|date',
+            'gender' => 'required|in:male,female',
+            'resume' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'photo' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+        ]);
+
+        // Handle file uploads for resume
+        if ($request->hasFile('resume')) {
+            $file = $request->file('resume');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time().'.'.$extension; // Use a unique filename to prevent overwriting
+            $path = $file->storeAs('resumes', $filename); // Save the image to the 'photos' directory with the custom filename
+            $validatedData['resume'] = $path;
+        }
+
+        // Handle file uploads for photo
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time().'.'.$extension; // Use a unique filename to prevent overwriting
+            $path = $file->storeAs('photos', $filename); // Save the image to the 'photos' directory with the custom filename
+            $validatedData['photo'] = $path;
+        }
+
+        // Create a new Applicant instance with the validated data
+        $applicant = Applicant::where('id', $id)->update($validatedData);
+
+        // Optionally, you can return a response or redirect the user
+        return response()->json(['status' => true, 'message' => 'Applicant updated successfully'], 201);
     }
 
     public function destroy(Applicant $applicant)
