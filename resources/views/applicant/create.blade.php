@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Auction-Create')
+@section('title', 'Create')
 
 @section('content')
 <style>
@@ -174,7 +174,6 @@
                     contentType: false,
                     success: function(response) {
                         // Handle successful form submission
-                        console.log(response);
                         if (response.status) {
                             Swal.fire({
                                 icon: 'success',
@@ -184,6 +183,7 @@
                             // Reset the form and clear error messages
                             $(form)[0].reset();
                             $('.text-danger').html('');
+                            $('#cropper-container').html('');
                         }
                     },
                     error: function(xhr, status, error) {

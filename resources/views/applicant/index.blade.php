@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Applicant')
+@section('title', 'Index')
 
 @section('content')
 <div class="row g-4">
