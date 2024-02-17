@@ -3,98 +3,78 @@
 @section('title', 'Create')
 
 @section('content')
-<style>
-    /* Custom styles for the form */
-    #registration-form {
-        max-width: 500px;
-        margin: 0 auto;
-    }
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Dashboard') }}
+        </h2>
+    </x-slot>
 
-    #registration-form div {
-        margin-bottom: 20px;
-    }
+    <div class="container mt-5">
+        <a href="{{ url('/dashboard') }}" class="btn btn-secondary">Back</a>
 
-    /* Hide the cropped image by default */
-    #cropped-image {
-        display: none;
-        max-width: 100%;
-        height: auto;
-    }
+        <h1 class="my-4 text-center">Applicant Registration</h1>
 
-    /* Style for error messages */
-    .invalid {
-        color: red;
-    }
-    #cropper-container {
-    display: none;
-}
-</style>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.css" />
-
-<div class="container mt-5">
-    <h1 class="my-4 text-center">Applicant Registration</h1>
-
-    <form id="registration-form" class="bg-light p-4 rounded" method="POST" action=" {{ route('applicants.store')}} ">
-        @csrf
-        <div class="mb-3">
-            <label for="first_name" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="first_name" name="first_name">
-            <div class="text-danger error-message" id="first_name-error"></div>
-        </div>
-        <div class="mb-3">
-            <label for="last_name" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="last_name" name="last_name">
-            <div class="text-danger error-message" id="last_name-error"></div>
-        </div>
-        <div class="mb-3">
-            <label for="phone" class="form-label">Phone</label>
-            <input type="text" class="form-control" id="phone" name="phone">
-            <div class="text-danger error-message" id="phone-error"></div>
-        </div>
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email">
-            <div class="text-danger error-message" id="email-error"></div>
-        </div>
-        <div class="mb-3">
-            <label for="address" class="form-label">Address</label>
-            <textarea class="form-control" id="address" name="address"></textarea>
-            <div class="text-danger error-message" id="address-error"></div>
-        </div>
-        <div class="mb-3">
-            <label for="dob" class="form-label">Date of Birth</label>
-            <input type="date" class="form-control" id="dob" name="dob">
-            <div class="text-danger error-message" id="dob-error"></div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Gender</label>
-            <div class="text-danger error-message" id="gender-error"></div>
-            <div>
-                <input type="radio" id="male" name="gender" value="male" class="form-check-input">
-                <label for="male" class="form-check-label">Male</label>
+        <form id="registration-form" class="bg-light p-4 rounded" method="POST" action=" {{ route('applicants.store')}} ">
+            @csrf
+            <div class="mb-3">
+                <label for="first_name" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="first_name" name="first_name">
+                <div class="text-danger error-message" id="first_name-error"></div>
             </div>
-            <div>
-                <input type="radio" id="female" name="gender" value="female" class="form-check-input">
-                <label for="female" class="form-check-label">Female</label>
+            <div class="mb-3">
+                <label for="last_name" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="last_name" name="last_name">
+                <div class="text-danger error-message" id="last_name-error"></div>
             </div>
-        </div>
-        <div class="mb-3">
-            <label for="resume" class="form-label">Resume</label>
-            <input type="file" class="form-control" id="resume" name="resume">
-            <div class="text-danger error-message" id="resume-error"></div>
-        </div>
-        <div class="mb-3">
-            <label for="photo" class="form-label">Photo</label>
-            <input type="file" class="form-control" id="photo" name="photo">
-            <div id="cropper-container"></div>
-            <div class="text-danger error-message" id="photo-error"></div>
-        </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="text" class="form-control" id="phone" name="phone">
+                <div class="text-danger error-message" id="phone-error"></div>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email">
+                <div class="text-danger error-message" id="email-error"></div>
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <textarea class="form-control" id="address" name="address"></textarea>
+                <div class="text-danger error-message" id="address-error"></div>
+            </div>
+            <div class="mb-3">
+                <label for="dob" class="form-label">Date of Birth</label>
+                <input type="date" class="form-control" id="dob" name="dob">
+                <div class="text-danger error-message" id="dob-error"></div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Gender</label>
+                <div class="text-danger error-message" id="gender-error"></div>
+                <div>
+                    <input type="radio" id="male" name="gender" value="male" class="form-check-input">
+                    <label for="male" class="form-check-label">Male</label>
+                </div>
+                <div>
+                    <input type="radio" id="female" name="gender" value="female" class="form-check-input">
+                    <label for="female" class="form-check-label">Female</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="resume" class="form-label">Resume</label>
+                <input type="file" class="form-control" id="resume" name="resume">
+                <div class="text-danger error-message" id="resume-error"></div>
+            </div>
+            <div class="mb-3">
+                <label for="photo" class="form-label">Photo</label>
+                <input type="file" class="form-control" id="photo" name="photo">
+                <div id="cropper-container"></div>
+                <div class="text-danger error-message" id="photo-error"></div>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Register</button>
-    </form>
-</div>
-
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+</x-app-layout>
 @endsection
 
 @section('script')
@@ -236,4 +216,34 @@
 </script>
 
 
+@endsection
+
+@section('css')
+    <style>
+        /* Custom styles for the form */
+        #registration-form {
+            /* max-width: 500px; */
+            margin: 0 auto;
+        }
+
+        #registration-form div {
+            margin-bottom: 20px;
+        }
+
+        /* Hide the cropped image by default */
+        #cropped-image {
+            display: none;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Style for error messages */
+        .invalid {
+            color: red;
+        }
+
+        #cropper-container {
+            display: none;
+        }
+    </style>
 @endsection

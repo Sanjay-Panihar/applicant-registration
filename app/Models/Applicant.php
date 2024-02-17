@@ -21,15 +21,4 @@ class Applicant extends Model
         'photo',
     ];
 
-    public static $rules = [
-        'first_name' => 'required',
-        'last_name' => 'required',
-        'phone' => 'required|numeric|digits:10',
-        'email' => 'required|email|unique:applicants',
-        'address' => 'required',
-        'dob' => 'required|date|before:date("d-m-Y", strtotime("-18 years"))',
-        'gender' => 'required',
-        'resume' => 'nullable|mimes:pdf,docx|max:2048',
-        'photo' => 'nullable|mimes:jpg,png|max:2048',
-    ];
 }
