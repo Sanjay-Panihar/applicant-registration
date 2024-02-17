@@ -123,7 +123,7 @@
             },
             photo: {
                 required: true,
-                extension: 'jpg|png' // Validate file extension
+                extension: 'jpg|png|jpeg' // Validate file extension
             }
         },
         // Specify validation error messages
@@ -222,7 +222,7 @@
     <style>
         /* Custom styles for the form */
         #registration-form {
-            /* max-width: 500px; */
+            max-width: 80%;
             margin: 0 auto;
         }
 

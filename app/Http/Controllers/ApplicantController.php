@@ -22,7 +22,7 @@ class ApplicantController extends Controller
                 ->make(true);
         }
 
-        return view('applicants.index');
+        return view('applicant.index');
 
     }
     public function create()

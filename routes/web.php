@@ -30,7 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
-    Route::get('/', [ApplicantController::class, 'index'])->name('applicants.index');
+    Route::get('/applicant', [ApplicantController::class, 'index'])->name('applicants.index');
 Route::get('/create', [ApplicantController::class, 'create'])->name('applicants.create');
 Route::post('/store', [ApplicantController::class, 'store'])->name('applicants.store');
 Route::get('/show/{applicant}', [ApplicantController::class, 'show'])->name('applicants.show');
