@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('gender');
             $table->string('resume')->nullable();
             $table->string('photo')->nullable();
+            $table->text('cropped_image')->nullable();
             $table->timestamps();
         });
     }

@@ -72,7 +72,7 @@
             $('#gender').val(response.applicant.gender);
 
             // Set the image path for the applicant photo
-            var applicantPhotoUrl = response.applicant.photo;
+            var applicantPhotoUrl = response.applicant.cropped_image;
             $('#applicant-photo').attr('src', applicantPhotoUrl);
 
             // Display modal

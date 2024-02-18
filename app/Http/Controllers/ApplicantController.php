@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Applicant;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ApplicantController extends Controller
 {
@@ -44,14 +46,14 @@ class ApplicantController extends Controller
             'resume' => 'required|file|mimes:pdf,doc,docx|max:2048',
             'photo' => 'required|image|mimes:jpg,png,jpeg|max:2048',
         ]);
-
+        $data = $request->all();
         // Handle file uploads for resume
         if ($request->hasFile('resume')) {
             $file = $request->file('resume');
             $extension = $file->getClientOriginalExtension();
             $filename = time().'.'.$extension; // Use a unique filename to prevent overwriting
             $path = $file->storeAs('resumes', $filename); // Save the image to the 'photos' directory with the custom filename
-            $validatedData['resume'] = $path;
+            $data['resume'] = $path;
         }
 
         // Handle file uploads for photo
@@ -66,13 +68,23 @@ class ApplicantController extends Controller
             $path = $uploadedFile->storeAs('images', $fileName, 'public');
 
             // Update the validated data to include the path to the uploaded image
-            $validatedData['photo'] = '/storage/' . $path;
+            $data['photo'] = '/storage/' . $path;
         }
 
-        // Create a new Applicant instance with the validated data
-        $applicant = Applicant::create($validatedData);
+        // Handle cropped image
+        if ($request->has('cropped_image')) {
+            $croppedImageData = $request->input('cropped_image');
+            $imageData = str_replace('data:image/png;base64,', '', $croppedImageData);
+            $imageData = str_replace(' ', '+', $imageData);
+            $decodedImage = base64_decode($imageData);
+            $imageName = time() . '_' . Str::random(10) . '.png';
+            $storagePath = 'public/images';
+            $path = Storage::put($storagePath . '/' . $imageName, $decodedImage);
+            $data['cropped_image'] = '/storage/images/' . $imageName; // Assuming images are stored in storage/app/public/images directory
+        }
 
-        // Optionally, you can return a response or redirect the user
+        $applicant = Applicant::create($data);
+
         return response()->json(['status' => true, 'message' => 'Applicant created successfully'], 201);
     }
 
@@ -123,25 +135,33 @@ class ApplicantController extends Controller
             $validatedData['resume'] = $path;
         }
 
-        // Handle file uploads for photo
         if ($request->hasFile('photo')) {
-            // Get the uploaded file
             $uploadedFile = $request->file('photo');
 
-            // Generate a unique filename
             $fileName = time() . '_' . $uploadedFile->getClientOriginalName();
 
-            // Store the file in the public/images directory
             $path = $uploadedFile->storeAs('images', $fileName, 'public');
 
-            // Update the validated data to include the path to the uploaded image
             $validatedData['photo'] = '/storage/' . $path;
         }
 
-        // Create a new Applicant instance with the validated data
+        if ($request->has('cropped_image')) {
+            $croppedImageData = $request->input('cropped_image');
+            $imageData = str_replace('data:image/png;base64,', '', $croppedImageData);
+            $imageData = str_replace(' ', '+', $imageData);
+            $decodedImage = base64_decode($imageData);
+
+            $imageName = time() . '_' . Str::random(10) . '.png';
+
+            $storagePath = 'public/images';
+
+            $path = Storage::put($storagePath . '/' . $imageName, $decodedImage);
+
+            $data['cropped_image'] = '/storage/images/' . $imageName; // Assuming images are stored in storage/app/public/images directory
+        }
+
         $applicant = Applicant::where('id', $id)->update($validatedData);
 
-        // Optionally, you can return a response or redirect the user
         return response()->json(['status' => true, 'message' => 'Applicant updated successfully'], 201);
     }
 

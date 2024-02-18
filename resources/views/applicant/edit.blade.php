@@ -96,7 +96,8 @@
                         <div id="uploaded-photo" style="margin-top: 10px;">
                             <!-- Display the last uploaded photo -->
                             @if($applicant->photo)
-                                <img src="{{ asset($applicant->photo) }}" style="max-width: 100px; max-height: 100px;" class="img img-responsive">
+                                <!-- <img src="{{ asset($applicant->photo) }}" style="max-width: 100px; max-height: 100px;" class="img img-responsive"> -->
+                                <img src="{{ asset($applicant->cropped_image) }}" style="max-width: 100px; max-height: 100px;" class="img img-responsive">
                             @endif
                         </div>
                     </div>

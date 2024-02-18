@@ -19,6 +19,7 @@ class Applicant extends Model
         'gender',
         'resume',
         'photo',
+        'cropped_image'
     ];
 
 }
