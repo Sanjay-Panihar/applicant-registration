@@ -96,10 +96,12 @@
                         <div id="uploaded-photo" style="margin-top: 10px;">
                             <!-- Display the last uploaded photo -->
                             @if($applicant->photo)
-                            <img src="{{ asset($applicant->photo) }}" style="max-width: 100px; max-height: 100px;">
+                                <img src="{{ asset($applicant->photo) }}" style="max-width: 100px; max-height: 100px;" class="img img-responsive">
                             @endif
                         </div>
                     </div>
+
+
 
                     <!-- Update Button -->
                     <button type="submit" class="btn btn-primary rounded-pill mb-2" id="update-btn">Update</button>

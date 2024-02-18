@@ -54,6 +54,13 @@
                                 <label class="form-label">Gender</label>
                                 <input type="text" class="form-control" id="gender" name="gender" value="" readonly>
                             </div>
+                            <!-- Photo -->
+                            <div class="mb-3">
+                                <label for="photo" class="form-label">Photo</label>
+                                <div id="uploaded-photo" style="margin-top: 10px;">
+                                    <img id="applicant-photo" src="" style="max-width: 150px; max-height: 150px;" alt="Applicant Photo" class="img img-responsive">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -70,6 +70,11 @@
             $('#address').val(response.applicant.address);
             $('#dob').val(response.applicant.dob);
             $('#gender').val(response.applicant.gender);
+
+            // Set the image path for the applicant photo
+            var applicantPhotoUrl = response.applicant.photo;
+            $('#applicant-photo').attr('src', applicantPhotoUrl);
+
             // Display modal
             $('#applicantDetails').modal('show');
         },
@@ -79,7 +84,6 @@
         }
     });
 }
-
 
     $('#addApplicant').on('click', function() {
         window.location.href = "{{ route('applicants.create')}}";

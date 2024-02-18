@@ -56,12 +56,17 @@ class ApplicantController extends Controller
 
         // Handle file uploads for photo
         if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time().'.'.$extension; // Use a unique filename to prevent overwriting
-            $path = $file->storeAs('photos', $filename); // Save the image to the 'photos' directory with the custom filename
-            $validatedData['photo'] = $path;
-            
+            // Get the uploaded file
+            $uploadedFile = $request->file('photo');
+
+            // Generate a unique filename
+            $fileName = time() . '_' . $uploadedFile->getClientOriginalName();
+
+            // Store the file in the public/images directory
+            $path = $uploadedFile->storeAs('images', $fileName, 'public');
+
+            // Update the validated data to include the path to the uploaded image
+            $validatedData['photo'] = '/storage/' . $path;
         }
 
         // Create a new Applicant instance with the validated data
@@ -120,11 +125,17 @@ class ApplicantController extends Controller
 
         // Handle file uploads for photo
         if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time().'.'.$extension; // Use a unique filename to prevent overwriting
-            $path = $file->storeAs('photos', $filename); // Save the image to the 'photos' directory with the custom filename
-            $validatedData['photo'] = $path;
+            // Get the uploaded file
+            $uploadedFile = $request->file('photo');
+
+            // Generate a unique filename
+            $fileName = time() . '_' . $uploadedFile->getClientOriginalName();
+
+            // Store the file in the public/images directory
+            $path = $uploadedFile->storeAs('images', $fileName, 'public');
+
+            // Update the validated data to include the path to the uploaded image
+            $validatedData['photo'] = '/storage/' . $path;
         }
 
         // Create a new Applicant instance with the validated data
