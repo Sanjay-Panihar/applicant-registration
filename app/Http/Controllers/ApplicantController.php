@@ -58,16 +58,12 @@ class ApplicantController extends Controller
 
         // Handle file uploads for photo
         if ($request->hasFile('photo')) {
-            // Get the uploaded file
             $uploadedFile = $request->file('photo');
 
-            // Generate a unique filename
             $fileName = time() . '_' . $uploadedFile->getClientOriginalName();
 
-            // Store the file in the public/images directory
             $path = $uploadedFile->storeAs('images', $fileName, 'public');
 
-            // Update the validated data to include the path to the uploaded image
             $data['photo'] = '/storage/' . $path;
         }
 
